@@ -69,6 +69,8 @@ High-fidelity prototype,Final UI/UX prototype,ui-ux
 - **Body**: The issue description
 - **Repo**: The repository name (will be prefixed with `REPO_PREFIX`)
 
+> **Important:** Do not include commas in the CSV fields. The importer does not support commas inside double-quoted values, so a comma will be treated as a column separator even when enclosed in quotes.
+
 ## Usage
 
 Run the script:
@@ -97,7 +99,11 @@ Issue created successfully: https://github.com/stevenmartinez94/ui-ux/issues/3
 Successfully added issue to project 2.
 
 ==================================================
-Script finished. Review the output for any errors or warnings.
+Import summary
+Successfully added issues (1):
+  - "Visual identity" in stevenmartinez94/ui-ux (https://github.com/stevenmartinez94/ui-ux/issues/3)
+Issues not added (0):
+  None
 ```
 
 ## Troubleshooting

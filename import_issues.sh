@@ -38,8 +38,12 @@ if [ ! -f "$CSV_FILE" ]; then
     exit 1
 fi
 
+# Track issues by whether they were added to the project.
+SUCCESSFUL_ISSUES=()
+UNSUCCESSFUL_ISSUES=()
+
 # Read the CSV file, skipping the header (tail -n +2)
-tail -n +2 "$CSV_FILE" | while IFS=, read -r TITLE_IN BODY_IN REPO_IN; do
+while IFS=, read -r TITLE_IN BODY_IN REPO_IN; do
     
     # Use 'xargs' to trim leading/trailing whitespace
     TITLE=$(echo "$TITLE_IN" | xargs)
@@ -63,6 +67,7 @@ tail -n +2 "$CSV_FILE" | while IFS=, read -r TITLE_IN BODY_IN REPO_IN; do
     # Check the exit status of the previous command
     if [ $? -ne 0 ]; then
         echo "ERROR: Failed to create issue \"$TITLE\" in $FULL_REPO. Check if the repo exists."
+        UNSUCCESSFUL_ISSUES+=("\"$TITLE\" in $FULL_REPO (issue creation failed)")
         continue
     fi
     
@@ -75,12 +80,27 @@ tail -n +2 "$CSV_FILE" | while IFS=, read -r TITLE_IN BODY_IN REPO_IN; do
     
     if [ $? -ne 0 ]; then
         echo "WARNING: Failed to add issue $ISSUE_URL to project $PROJECT_ID. Manual intervention may be required."
+        UNSUCCESSFUL_ISSUES+=("\"$TITLE\" in $FULL_REPO ($ISSUE_URL; project addition failed)")
     else
         echo "Successfully added issue to project $PROJECT_ID."
+        SUCCESSFUL_ISSUES+=("\"$TITLE\" in $FULL_REPO ($ISSUE_URL)")
     fi
 
-done
+done < <(tail -n +2 "$CSV_FILE")
 
 echo ""
 echo "=================================================="
-echo "Script finished. Review the output for any errors or warnings."
+echo "Import summary"
+echo "Successfully added issues (${#SUCCESSFUL_ISSUES[@]}):"
+if [ ${#SUCCESSFUL_ISSUES[@]} -eq 0 ]; then
+    echo "  None"
+else
+    printf '  - %s\n' "${SUCCESSFUL_ISSUES[@]}"
+fi
+
+echo "Issues not added (${#UNSUCCESSFUL_ISSUES[@]}):"
+if [ ${#UNSUCCESSFUL_ISSUES[@]} -eq 0 ]; then
+    echo "  None"
+else
+    printf '  - %s\n' "${UNSUCCESSFUL_ISSUES[@]}"
+fi
