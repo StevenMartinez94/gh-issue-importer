@@ -53,6 +53,17 @@ A bash script that automates the creation of GitHub issues from a CSV file and a
 - The URL will be: `https://github.com/users/{owner}/projects/{id}`
 - Copy the `{id}` value
 
+## Running with Docker
+
+No local `gh` install needed. Create `.env` (see Configuration) and run with a token that has `repo` and `project` scopes:
+
+```bash
+export GH_TOKEN=$(gh auth token)   # or any PAT with repo + project scopes
+docker compose run --rm importer
+```
+
+The project directory is mounted into the container, so `CSV_FILE` is resolved relative to it.
+
 ## CSV Format
 
 Create a `csv` file with the following format:
