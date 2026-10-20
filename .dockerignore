@@ -1,1 +1,15 @@
+# env related
+.env
+.env.example
+
+# Docker
+.dockerignore
+Dockerfile
+docker-compose.yml
+
+# Git related
 .git
+.gitignore
+
+# Github issues related
+example.csv
