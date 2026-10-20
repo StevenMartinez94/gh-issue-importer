@@ -1,0 +1,8 @@
+services:
+  gh-issue-importer:
+    build: .
+    container_name: gh-issue-importer
+    env_file: .env # GH_TOKEN must be a token with `repo` and `project` scopes
+    volumes:
+      - ./:/app:ro
+    working_dir: /app
