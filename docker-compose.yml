@@ -1,10 +1,8 @@
 services:
-  importer:
+  gh-issue-importer:
     build: .
-    # GH_TOKEN must be a token with `repo` and `project` scopes
-    environment:
-      GH_TOKEN: ${GH_TOKEN:?Set GH_TOKEN (needs repo and project scopes)}
+    container_name: gh-issue-importer
+    env_file: .env # GH_TOKEN must be a token with `repo` and `project` scopes
     volumes:
-      # .env, the CSV file and the script are read from the project directory
       - ./:/app:ro
     working_dir: /app
